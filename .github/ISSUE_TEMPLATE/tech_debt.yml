@@ -1,0 +1,30 @@
+name: Deuda técnica o configuración
+description: Proponer un cambio técnico acotado y verificable.
+title: "chore: "
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Problema y motivo
+      description: Evidencia del problema actual, no necesidades hipotéticas.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Alcance y límites
+      description: Archivos o componentes afectados, exclusiones y decisiones por aprobar.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Aceptación y verificación
+      description: Resultado observable, comandos o pruebas y riesgos.
+    validations:
+      required: true
+  - type: textarea
+    id: permissions
+    attributes:
+      label: Permisos necesarios
+      description: Distingue edición local, commit, push, PR, merge y configuración de GitHub.

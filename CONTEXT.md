@@ -42,7 +42,7 @@
 | Persistencia local | SwiftData |
 | Red | `URLSession` + capa propia de networking (sin dependencias externas al inicio) |
 | Tests | Swift Testing para pruebas unitarias y de integración; XCTest con XCUIAutomation para UI (aceptado en [ADR-005](docs/adr/005-testing-frameworks.md)) |
-| CI | GitHub Actions |
+| CI | GitHub Actions; workflow preparado, ejecución remota pendiente |
 | Gestión de dependencias | Swift Package Manager |
 
 ---
@@ -132,13 +132,13 @@ docs: update CONTEXT.md roadmap
 - Todo cambio posterior al arranque entra por PR, nunca con push directo a `develop` o `main`. La excepción única para establecer la base está documentada en ADR-003 y requiere autorización para ejecutarla.
 - PR pequeño y enfocado (idealmente una capa o un caso de uso).
 - Debe enlazar un issue (`Closes #N` cuando corresponda cerrar o `Refs #N` para referenciarlo). El cierre automático depende de la integración en la rama predeterminada.
-- Plantilla local [`.github/pull_request_template.md`](.github/pull_request_template.md) con: contexto, cambios, cómo probar, checklist (tests, arquitectura, sin warnings nuevos), capturas si hay UI, self-review humana y asistencia de IA declarada. Su publicación en GitHub queda pendiente.
+- Plantilla [`.github/pull_request_template.md`](.github/pull_request_template.md), incluida en la base documental publicada en `main` y `develop`, con: contexto, cambios, cómo probar, checklist (tests, arquitectura, sin warnings nuevos), capturas si hay UI, self-review humana y asistencia de IA declarada.
 - Estrategia aceptada en [ADR-003](docs/adr/003-branching-and-merges.md): ramas de trabajo hacia `develop` mediante **squash merge**; `release/*` y `hotfix/*` hacia `main` mediante **merge commit**, seguido de reintegración en `develop` mediante **merge commit** si hay cambios pendientes.
 - Guía operativa: [CONTRIBUTING.md](CONTRIBUTING.md). Las rutas y el método de merge todavía no están automatizados.
 
 ### 5.4 Branch protection (configurar en GitHub → Settings → Branches)
 
-Configuración objetivo para `main` y `develop`; todavía no aplicada:
+Configuración objetivo para `main` y `develop`; todavía no aplicada. El workflow local `.github/workflows/ci.yml` define los jobs `Build` y `Tests`; no exigirlos como checks hasta confirmar su ejecución real en GitHub:
 
 - [ ] Require a pull request before merging
 - [ ] Require status checks to pass (build + tests de CI, cuando existan checks reales)
@@ -153,12 +153,16 @@ No exigir historial lineal en `main` ni `develop`: ambas reciben merge commits. 
 
 ### 5.5 Archivos de gobierno del repo
 
+Archivos preparados localmente; su presencia no demuestra publicación, ejecución de CI ni protección activa:
+
 - `.github/CODEOWNERS` — dueños por carpeta (por ejemplo `Core/` y `Features/*/Domain/`).
 - `.github/pull_request_template.md`
 - `.github/ISSUE_TEMPLATE/` — bug, feature, tech-debt.
 - `.github/workflows/ci.yml` — build + tests en cada PR.
 - `CONTRIBUTING.md` — flujo de ramas, commits, estilo de revisión.
 - `docs/adr/` — Architecture Decision Records.
+
+Los formularios de issues y la detección de CODEOWNERS dependen de la rama que GitHub consulta: los formularios usan la rama predeterminada (`main`), y CODEOWNERS la rama base del PR. Prepararlos en una rama de trabajo no los activa en esas ramas; no saltarse ADR-003 para publicarlos directamente.
 
 ### 5.6 Roles simulados (para el portfolio)
 

@@ -1,0 +1,32 @@
+name: Feature
+description: Definir una tarea funcional pequeña antes de implementarla.
+title: "feat: "
+body:
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objetivo observable
+      description: Qué necesidad cubre y cuál es el resultado esperado.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Alcance y exclusiones
+      description: Componentes permitidos, fuera de alcance y decisiones pendientes.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Criterios de aceptación
+      description: Comprobaciones verificables, incluidos errores y tests sin red real.
+    validations:
+      required: true
+  - type: textarea
+    id: autonomy
+    attributes:
+      label: Autonomía y entrega
+      description: Qué puede ejecutar el agente, cuándo debe consultar y qué evidencia debe entregar.
+    validations:
+      required: true
