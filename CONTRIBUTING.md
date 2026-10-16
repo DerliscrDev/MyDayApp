@@ -8,7 +8,7 @@
 - [Revisión individual — ADR-004](docs/adr/004-solo-review.md)
 - [Testing — ADR-005](docs/adr/005-testing-frameworks.md)
 
-> Esta guía define el flujo acordado. La base documental está publicada en `main` y `develop`. En `chore/project-bootstrap` se prepara el proyecto Xcode, CI y los archivos de gobierno para un PR hacia `develop`. La ejecución remota de CI, la integración y las protecciones todavía no están verificadas; consultar `memory.md` y Git para el estado de publicación actual.
+> Esta guía define el flujo acordado. CI y el ruleset `protect-main-develop` están verificados; los resultados corresponden a commits concretos, no a cualquier cambio futuro. Consultar `memory.md`, Git y GitHub para el estado de ramas, publicación, PRs y revisiones pendientes.
 
 ## Unidad de trabajo
 
@@ -76,19 +76,19 @@ En modo individual no se exigen aprobaciones formales ni review de Code Owners. 
 - Proyecto: `MyDayApp.xcodeproj`; esquema compartido: `MyDayApp`, en `MyDayApp.xcodeproj/xcshareddata/xcschemes/MyDayApp.xcscheme`; targets: `MyDayApp`, `MyDayAppTests` y `MyDayAppUITests`. Versión mínima efectiva: iOS 17.0 en Debug y Release para los tres targets.
 - Para cada PR, registrar comando/pasos, entorno relevante, resultado y bloqueos. No incluir secretos ni logs sensibles.
 - En cambios exclusivamente documentales, comprobar consistencia y enlaces relativos; justificar por qué build/tests no aplican.
-- El CI futuro debe ejecutar las suites de pruebas y fallar ante errores. Una ejecución local no demuestra que el workflow exista o haya pasado.
+- CI debe ejecutar las suites y fallar ante errores. Una ejecución local no demuestra un resultado remoto; comprobar los checks del commit actual antes del merge.
 
-### CI preparado
+### CI
 
-`.github/workflows/ci.yml` se ejecutará en pushes, PRs hacia `main`/`develop` y manualmente cuando esté disponible en la rama predeterminada. Usa `macos-15`, Xcode 26.2 e iPhone 17 Pro con iOS 26.2, disponibles en la [imagen oficial del runner](https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md). La versión mínima de la app sigue siendo iOS 17; CI sobre iOS 26.2 no verifica ejecución en iOS 17.
+`.github/workflows/ci.yml` se ejecuta en pushes, PRs hacia `main`/`develop` y manualmente cuando esté disponible en la rama predeterminada. Usa `macos-15`, Xcode 26.2 e iPhone 17 Pro con iOS 26.2, disponibles en la [imagen oficial del runner](https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md). La versión mínima de la app sigue siendo iOS 17; CI sobre iOS 26.2 no verifica ejecución en iOS 17.
 
-- Jobs previstos: `Build` y `Tests`; confirmar sus nombres efectivos y resultados antes de exigirlos en protecciones.
+- Jobs reales: `Build` y `Tests`, exigidos por el ruleset de `main`/`develop`, con actualización de rama y resolución de conversaciones. Cero aprobaciones obligatorias, sin historial lineal ni restricción general de actualizaciones. El método de merge se revisa según ADR-003; que GitHub ofrezca Rebase no lo convierte en el método acordado.
 - `Tests` ejecuta ambos targets, genera `.xcresult` y exige un resumen correcto con al menos un test; no convierte el unitario vacío en cobertura funcional.
 - Los errores de `xcodebuild` se propagan aunque se guarde el log con `tee` (`bash` con `pipefail`). Logs y resultados se conservan como artefactos durante 7 días; no incluir secretos en ellos.
 - Acceso del workflow de solo lectura, credenciales de checkout no persistidas y acciones oficiales fijadas por SHA. No requiere certificados, API keys ni dependencias externas de la app.
 - Si la imagen deja de incluir Xcode o el simulador seleccionado, actualizar y validar el workflow en un cambio explícito; no descargar runtimes silenciosamente.
 
-Un bloqueo local de CoreSimulator o de conectividad debe registrarse con sus logs y límites en `memory.md`; no demuestra por sí mismo un fallo de la app ni autoriza cambios de permisos del sistema. El workflow está preparado, pero solo una ejecución real de Actions puede aportar evidencia de CI.
+Un bloqueo local de CoreSimulator o de conectividad debe registrarse con sus logs y límites en `memory.md`; no demuestra por sí mismo un fallo de la app ni autoriza cambios de permisos del sistema. CI ya ha tenido ejecuciones correctas; comprobar siempre el resultado del commit que se desea integrar.
 
 ### Validación local del proyecto base
 

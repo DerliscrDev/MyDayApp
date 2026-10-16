@@ -42,7 +42,7 @@
 | Persistencia local | SwiftData |
 | Red | `URLSession` + capa propia de networking (sin dependencias externas al inicio) |
 | Tests | Swift Testing para pruebas unitarias y de integración; XCTest con XCUIAutomation para UI (aceptado en [ADR-005](docs/adr/005-testing-frameworks.md)) |
-| CI | GitHub Actions; workflow preparado, ejecución remota pendiente |
+| CI | GitHub Actions con jobs `Build` y `Tests`; evidencia y estado por commit en `memory.md` |
 | Gestión de dependencias | Swift Package Manager |
 
 ---
@@ -138,22 +138,22 @@ docs: update CONTEXT.md roadmap
 
 ### 5.4 Branch protection (configurar en GitHub → Settings → Branches)
 
-Configuración objetivo para `main` y `develop`; todavía no aplicada. El workflow local `.github/workflows/ci.yml` define los jobs `Build` y `Tests`; no exigirlos como checks hasta confirmar su ejecución real en GitHub:
+Configuración verificada el 2026-10-16 en el ruleset activo [`protect-main-develop`](https://github.com/DerliscrDev/MyDayApp/rules/25219989), aplicado a `main` y `develop`. Los checks `Build` y `Tests` de GitHub Actions ya tuvieron ejecuciones reales correctas; cada cambio nuevo debe pasar su propia ejecución:
 
-- [ ] Require a pull request before merging
-- [ ] Require status checks to pass (build + tests de CI, cuando existan checks reales)
-- [ ] Require branches to be up to date before merging
-- [ ] Require conversation resolution before merging
-- [ ] Do not allow force pushes / deletions
-- [ ] Include administrators (opcional; ver nota sobre trabajo en solitario)
+- [x] Require a pull request before merging
+- [x] Require status checks to pass (`Build` y `Tests`, GitHub Actions)
+- [x] Require branches to be up to date before merging
+- [x] Require conversation resolution before merging
+- [x] Do not allow force pushes / deletions
+- [ ] Comprobar bypass de administradores: la API pública no expone esa lista
 
 No exigir historial lineal en `main` ni `develop`: ambas reciben merge commits. No exigir aprobaciones formales ni revisión obligatoria de Code Owners en modo individual; el descarte de aprobaciones antiguas se reevaluará si se incorpora un reviewer humano.
 
-> **Trabajo individual — decisión aceptada en [ADR-004](docs/adr/004-solo-review.md):** PR + CI + self-review documentada por el desarrollador, con revisión de IA adicional declarada. GitHub no permite aprobar tu propio PR y una revisión de IA no satisface una aprobación humana requerida. La política está documentada; CI y protecciones aún no están configurados.
+> **Trabajo individual — decisión aceptada en [ADR-004](docs/adr/004-solo-review.md):** PR + CI + self-review documentada por el desarrollador, con revisión de IA adicional declarada. El ruleset exige cero aprobaciones y no exige review de Code Owners; esto no elimina la self-review acordada. GitHub no permite aprobar tu propio PR y una revisión de IA no satisface una aprobación humana requerida.
 
 ### 5.5 Archivos de gobierno del repo
 
-Archivos preparados localmente; su presencia no demuestra publicación, ejecución de CI ni protección activa:
+Archivos publicados en `chore/project-bootstrap` (PR #2 hacia `develop`). La activación en cada rama y los resultados por commit deben comprobarse; no se infieren solo de su presencia:
 
 - `.github/CODEOWNERS` — dueños por carpeta (por ejemplo `Core/` y `Features/*/Domain/`).
 - `.github/pull_request_template.md`

@@ -4,14 +4,14 @@ Actualizado: **2026-10-16**. Contrastar con archivos y Git; esta memoria no conc
 
 ## Estado verificado
 
-- **M0 no terminado.** Rama activa: `chore/project-bootstrap`, basada en `905e50b1e2411d4b5e6a15155135e660fa128ac7`. Configuración incorporada en el commit local `6f0b82c`; esta memoria se guarda como checkpoint posterior. Consultar `git log -2`. Sin upstream ni publicación de esta rama.
-- `main`, `develop` y las referencias locales `origin/*` siguen en la base documental `905e50b`. `origin`: `https://github.com/DerliscrDev/MyDayApp.git`. La última publicación verificada solo contenía documentación.
+- **M0 no terminado.** Rama activa: `chore/project-bootstrap`, siguiendo `origin/chore/project-bootstrap`. Último head publicado: `ccb8bf4f189667be0b6697c7595c3b8480708839`; configuración `6f0b82c`. Se prepara otro checkpoint documental: consultar `git log -1` y publicar antes de la revisión final, sin asumir que está en GitHub.
+- `main`, `develop` y sus referencias locales `origin/*` siguen en la base documental `905e50b`. `origin`: `https://github.com/DerliscrDev/MyDayApp.git`. La configuración está en la rama chore, no integrada en esas ramas.
 - Versionados localmente: proyecto/esquema/assets/tests existentes, `.github/workflows/ci.yml`, CODEOWNERS, 3 formularios de issues y documentación actualizada: 27 archivos en total. Código Swift, proyecto y esquema preservados; datos personales de Xcode ignorados.
-- CI remoto, issue/PR, protecciones, integración en `develop` y primera rama funcional todavía pendientes. Los formularios dependen de `main`; CODEOWNERS depende de la base del PR. No confundir archivos preparados con activación en GitHub.
+- [PR #2](https://github.com/DerliscrDev/MyDayApp/pull/2) abierto, base `develop`, head `chore/project-bootstrap`. Título y descripción corregidos; self-review humana pendiente. [Issue #1](https://github.com/DerliscrDev/MyDayApp/issues/1) enlazado, todavía sin descripción. CI de push y PR correcto en `ccb8bf4`; protecciones activas. Falta publicar el checkpoint, validar su nuevo head, revisión humana y merge. Rama funcional no creada.
 
 ## Objetivo y alcance aprobado
 
-- **Objetivo actual:** cerrar la configuración antes de empezar features. El desarrollador autorizó diagnosticar CoreSimulator, hacer los commits/push necesarios de configuración, actualizar documentación y crear la primera rama funcional, sin implementar todavía la feature.
+- **Objetivo:** cerrar M0 y detenerse en la primera rama funcional, sin implementar todavía la feature.
 - Autorización explícita vigente para este cierre: instalar GitHub CLI, preparar CI/gobierno, crear issue/PR, commits/push de configuración y protecciones acordadas después de obtener checks reales. Merge squash hacia `develop` condicionado a CI correcto y **revisión humana final**. Después, crear `feature/core-http-client`, sin implementar código funcional.
 - No cambiar permisos del sistema, simular aprobación humana, forzar pushes ni saltarse las rutas de ADR-003. No dar M0 por cerrado ni crear la rama funcional sobre una base sin integrar.
 
@@ -25,18 +25,18 @@ Actualizado: **2026-10-16**. Contrastar con archivos y Git; esta memoria no conc
 
 ## Evidencia y límites
 
-- Comprobaciones locales: proyecto/JSON/XML y referencias válidos; 4 YAML de CI/forms parseados, scripts bash/Python válidos. El comprobador de resumen acepta tests correctos no vacíos y rechaza vacío/fallo; `tee` conserva fallos con `pipefail`. No son ejecución de CI ni de suites iOS.
-- CI preparado: `macos-15`, Xcode 26.2, iPhone 17 Pro/iOS 26.2; jobs previstos `Build` y `Tests`, acciones oficiales SHA, permisos mínimos y artefactos 7 días. Combinación contrastada con documentación oficial, no ejecutada remotamente.
-- Build previo correcto, Debug/iPhone 15 Pro/iOS 17.5, copia sin `xcuserdata`. Tests locales actuales: `SIGABRT`, errores FSEvents/caché y CoreSimulator inaccesible (código 61). XPC `root:wheel/755`, sin justificar cambios de permisos; causa no determinada. Históricamente: 4 tests distintos, 7 ejecuciones sin fallos; no sustituye la validación actual.
-- **Bloqueos:** terminal del agente no resuelve `github.com` (`git ls-remote` falló); las consultas públicas mediante herramienta HTTP sí funcionan. Homebrew falló instalando `gh` por error interno de memoria. Se extrajo CLI 2.82.1 de su bottle cacheado, SHA-256 verificado; ejecutable temporal `myday-m0-config-n0qwyg7z/tools/gh`, sin autenticación (`gh auth status`). No extraer ni pedir tokens.
-- Commit `6f0b82c` verificado: 19 archivos del cambio, incluyendo los 11 del proyecto existente. Push explícito de `chore/project-bootstrap` falló con salida 128 (`Could not resolve host: github.com`). No se publicaron configuración, issue/PR, checks ni protecciones; no hubo merge ni creación de rama funcional.
-- Evidencia temporal bajo el directorio aprobado de OpenCode: `myday-m0-config-n0qwyg7z/` (validaciones, herramienta y borradores `issue-draft.md`/`pr-draft.md`); build/bloqueo iOS en `myday-project-bootstrap-oq7_rp8n/`. Los temporales pueden desaparecer. Comandos reproducibles: [CONTRIBUTING.md](CONTRIBUTING.md).
-- Límites: unitario vacío; UI comprueba `Hello, world!` (espera 5 s, control negativo verificado anteriormente). Restantes tests de plantilla; sin cobertura de negocio. Aviso conocido de metadatos de App Intents. Sin validación Release, dispositivo físico, iOS 17.0 exacto ni self-review humana confirmada.
+- Validación local de proyecto, JSON/XML, YAML y scripts correcta; comprobador de resumen y propagación de fallos verificados. No equivale a ejecución de CI ni de suites iOS.
+- CI de push [38855332988](https://github.com/DerliscrDev/MyDayApp/actions/runs/38855332988) y PR [38856514344](https://github.com/DerliscrDev/MyDayApp/actions/runs/38856514344): `success` para `ccb8bf4`; `Build`/`Tests` correctos. No se han leído conteos remotos. Entorno macos-15/Xcode 26.2/iOS 26.2; no demuestra ejecución iOS 17. Cambios posteriores requieren CI propio.
+- Build local previo correcto en iOS 17.5; tests locales actuales bloqueados por `SIGABRT`/CoreSimulator (código 61), causa desconocida. Históricamente: 4 tests distintos, 7 ejecuciones sin fallos; no sustituye la validación actual.
+- **Bloqueos del agente:** terminal sin DNS a GitHub, CLI temporal `myday-m0-config-n0qwyg7z/tools/gh` sin autenticar. Herramienta HTTP pública funciona; el desarrollador publica desde su Terminal normal, con permiso `workflow` ya resuelto. No pedir ni extraer tokens.
+- Ruleset [25219989](https://github.com/DerliscrDev/MyDayApp/rules/25219989), creado por el desarrollador, verificado por API: `active`, solo `main`/`develop`, ambas protegidas. PR obligatorio, 0 aprobaciones, sin Code Owners, conversaciones resueltas, checks `Build`/`Tests` de Actions (15368), rama actualizada, sin force/delete. Sin restricciones de updates ni historial lineal. Rebase también permitido por GitHub, pero no es el método acordado. Bypass no visible por API pública.
+- Temporales de OpenCode: `myday-m0-config-n0qwyg7z/` (validaciones, CLI y borradores de issue/PR), `myday-project-bootstrap-oq7_rp8n/` (build/tests locales). Pueden desaparecer. Comandos: [CONTRIBUTING.md](CONTRIBUTING.md).
+- Límites: unitario vacío; UI verifica saludo y el resto es plantilla, sin cobertura de negocio. Aviso conocido de App Intents. Sin validación Release, dispositivo físico, iOS 17.0 exacto ni self-review humana confirmada.
 
 ## Próximos pasos para retomar
 
-1. Recuperar conectividad de la terminal y autenticar GitHub CLI mediante flujo interactivo del desarrollador, sin pegar credenciales en chat. No modificar DNS/permisos/servicios automáticamente.
-2. Publicar configuración, crear/enlazar issue y PR hacia `develop`; ejecutar CI y aplicar protecciones con checks reales. Publicar no equivale a fusionar: esperar revisión humana final.
+1. Publicar el checkpoint documental desde la Terminal normal si persiste el bloqueo del agente; esperar CI verde en el nuevo head. No reutilizar resultados de `ccb8bf4` como validación de otro commit.
+2. Completar objetivo/alcance/aceptación del issue #1 y documentar self-review humana real en el PR. Después, squash merge hacia `develop`, nunca hacia `main` en este PR.
 3. Tras integrar en `develop`, crear `feature/core-http-client` desde esa base actualizada y detenerse. La implementación y sus criterios siguen por acordar.
 
 ## Protocolo de continuidad
