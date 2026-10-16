@@ -4,9 +4,9 @@ Actualizado: **2026-10-16**. Contrastar con archivos y Git; esta memoria no conc
 
 ## Estado verificado
 
-- **M0 no terminado.** Rama activa: `chore/project-bootstrap`, basada en `905e50b1e2411d4b5e6a15155135e660fa128ac7`; consultar `git log -1` para el commit local actual. Sin upstream ni publicación de esta rama.
+- **M0 no terminado.** Rama activa: `chore/project-bootstrap`, basada en `905e50b1e2411d4b5e6a15155135e660fa128ac7`. Configuración incorporada en el commit local `6f0b82c`; esta memoria se guarda como checkpoint posterior. Consultar `git log -2`. Sin upstream ni publicación de esta rama.
 - `main`, `develop` y las referencias locales `origin/*` siguen en la base documental `905e50b`. `origin`: `https://github.com/DerliscrDev/MyDayApp.git`. La última publicación verificada solo contenía documentación.
-- Preparados localmente: proyecto/esquema/assets/tests existentes, `.github/workflows/ci.yml`, CODEOWNERS, 3 formularios de issues y documentación actualizada. No se cambió código Swift, proyecto ni esquema. No borrar trabajo local.
+- Versionados localmente: proyecto/esquema/assets/tests existentes, `.github/workflows/ci.yml`, CODEOWNERS, 3 formularios de issues y documentación actualizada: 27 archivos en total. Código Swift, proyecto y esquema preservados; datos personales de Xcode ignorados.
 - CI remoto, issue/PR, protecciones, integración en `develop` y primera rama funcional todavía pendientes. Los formularios dependen de `main`; CODEOWNERS depende de la base del PR. No confundir archivos preparados con activación en GitHub.
 
 ## Objetivo y alcance aprobado
@@ -29,6 +29,7 @@ Actualizado: **2026-10-16**. Contrastar con archivos y Git; esta memoria no conc
 - CI preparado: `macos-15`, Xcode 26.2, iPhone 17 Pro/iOS 26.2; jobs previstos `Build` y `Tests`, acciones oficiales SHA, permisos mínimos y artefactos 7 días. Combinación contrastada con documentación oficial, no ejecutada remotamente.
 - Build previo correcto, Debug/iPhone 15 Pro/iOS 17.5, copia sin `xcuserdata`. Tests locales actuales: `SIGABRT`, errores FSEvents/caché y CoreSimulator inaccesible (código 61). XPC `root:wheel/755`, sin justificar cambios de permisos; causa no determinada. Históricamente: 4 tests distintos, 7 ejecuciones sin fallos; no sustituye la validación actual.
 - **Bloqueos:** terminal del agente no resuelve `github.com` (`git ls-remote` falló); las consultas públicas mediante herramienta HTTP sí funcionan. Homebrew falló instalando `gh` por error interno de memoria. Se extrajo CLI 2.82.1 de su bottle cacheado, SHA-256 verificado; ejecutable temporal `myday-m0-config-n0qwyg7z/tools/gh`, sin autenticación (`gh auth status`). No extraer ni pedir tokens.
+- Commit `6f0b82c` verificado: 19 archivos del cambio, incluyendo los 11 del proyecto existente. Push explícito de `chore/project-bootstrap` falló con salida 128 (`Could not resolve host: github.com`). No se publicaron configuración, issue/PR, checks ni protecciones; no hubo merge ni creación de rama funcional.
 - Evidencia temporal bajo el directorio aprobado de OpenCode: `myday-m0-config-n0qwyg7z/` (validaciones, herramienta y borradores `issue-draft.md`/`pr-draft.md`); build/bloqueo iOS en `myday-project-bootstrap-oq7_rp8n/`. Los temporales pueden desaparecer. Comandos reproducibles: [CONTRIBUTING.md](CONTRIBUTING.md).
 - Límites: unitario vacío; UI comprueba `Hello, world!` (espera 5 s, control negativo verificado anteriormente). Restantes tests de plantilla; sin cobertura de negocio. Aviso conocido de metadatos de App Intents. Sin validación Release, dispositivo físico, iOS 17.0 exacto ni self-review humana confirmada.
 
