@@ -8,7 +8,7 @@
 - [Revisión individual — ADR-004](docs/adr/004-solo-review.md)
 - [Testing — ADR-005](docs/adr/005-testing-frameworks.md)
 
-> Esta guía define el flujo acordado. Existen el proyecto Xcode, su esquema compartido, `.gitignore` y la plantilla local de PR. Git está inicializado en `main`; la base inicial se limita a documentación y `.gitignore`, sin incorporar aún el proyecto Xcode ni los tests. El remoto local no está configurado y la publicación, CI y las protecciones están pendientes.
+> Esta guía define el flujo acordado. CI y el ruleset `protect-main-develop` están verificados; los resultados corresponden a commits concretos, no a cualquier cambio futuro. Consultar `memory.md`, Git y GitHub para el estado de ramas, publicación, PRs y revisiones pendientes.
 
 ## Unidad de trabajo
 
@@ -57,7 +57,7 @@ El título del PR debe seguir esta convención, especialmente cuando se conviert
 
 ## Pull Requests y revisión
 
-1. Enlazar el issue y usar la [plantilla de PR](.github/pull_request_template.md), que solicita la evidencia de ADR-004. El archivo existe localmente; todavía no está publicado en GitHub.
+1. Enlazar el issue y usar la [plantilla de PR](.github/pull_request_template.md), publicada con la base documental; solicita la evidencia de ADR-004.
 2. Explicar qué cambia, por qué y cómo comprobarlo; añadir capturas si cambia la UI.
 3. Revisar el diff completo, incluidos tests, configuración y archivos generados.
 4. Revisar separación de capas, disponibilidad desde iOS 17, estados de error, cancelación/concurrencia cuando aplique y ausencia de secretos.
@@ -76,7 +76,19 @@ En modo individual no se exigen aprobaciones formales ni review de Code Owners. 
 - Proyecto: `MyDayApp.xcodeproj`; esquema compartido: `MyDayApp`, en `MyDayApp.xcodeproj/xcshareddata/xcschemes/MyDayApp.xcscheme`; targets: `MyDayApp`, `MyDayAppTests` y `MyDayAppUITests`. Versión mínima efectiva: iOS 17.0 en Debug y Release para los tres targets.
 - Para cada PR, registrar comando/pasos, entorno relevante, resultado y bloqueos. No incluir secretos ni logs sensibles.
 - En cambios exclusivamente documentales, comprobar consistencia y enlaces relativos; justificar por qué build/tests no aplican.
-- El CI futuro debe ejecutar las suites de pruebas y fallar ante errores. Una ejecución local no demuestra que el workflow exista o haya pasado.
+- CI debe ejecutar las suites y fallar ante errores. Una ejecución local no demuestra un resultado remoto; comprobar los checks del commit actual antes del merge.
+
+### CI
+
+`.github/workflows/ci.yml` se ejecuta en pushes, PRs hacia `main`/`develop` y manualmente cuando esté disponible en la rama predeterminada. Usa `macos-15`, Xcode 26.2 e iPhone 17 Pro con iOS 26.2, disponibles en la [imagen oficial del runner](https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md). La versión mínima de la app sigue siendo iOS 17; CI sobre iOS 26.2 no verifica ejecución en iOS 17.
+
+- Jobs reales: `Build` y `Tests`, exigidos por el ruleset de `main`/`develop`, con actualización de rama y resolución de conversaciones. Cero aprobaciones obligatorias, sin historial lineal ni restricción general de actualizaciones. El método de merge se revisa según ADR-003; que GitHub ofrezca Rebase no lo convierte en el método acordado.
+- `Tests` ejecuta ambos targets, genera `.xcresult` y exige un resumen correcto con al menos un test; no convierte el unitario vacío en cobertura funcional.
+- Los errores de `xcodebuild` se propagan aunque se guarde el log con `tee` (`bash` con `pipefail`). Logs y resultados se conservan como artefactos durante 7 días; no incluir secretos en ellos.
+- Acceso del workflow de solo lectura, credenciales de checkout no persistidas y acciones oficiales fijadas por SHA. No requiere certificados, API keys ni dependencias externas de la app.
+- Si la imagen deja de incluir Xcode o el simulador seleccionado, actualizar y validar el workflow en un cambio explícito; no descargar runtimes silenciosamente.
+
+Un bloqueo local de CoreSimulator o de conectividad debe registrarse con sus logs y límites en `memory.md`; no demuestra por sí mismo un fallo de la app ni autoriza cambios de permisos del sistema. CI ya ha tenido ejecuciones correctas; comprobar siempre el resultado del commit que se desea integrar.
 
 ### Validación local del proyecto base
 
@@ -106,6 +118,8 @@ Los demás tests siguen siendo de plantilla: el unitario no contiene aserciones,
 ### Archivos compartidos y locales
 
 El `.gitignore` actualizado por el desarrollador excluye estado personal de Xcode, productos de compilación y otros artefactos locales. Se conserva esa versión con dos ajustes acordados: excluir bundles `*.xcresult/` y permitir versionar `Package.resolved` para reproducir las versiones de dependencias de la app. No excluye el proyecto, `xcshareddata`, assets, código, tests ni documentación. Los archivos personales existentes se conservan en disco. Estar disponible para versionar no implica estar incluido en el primer commit: la base inicial excluye expresamente app, proyecto y tests.
+
+Los formularios de `.github/ISSUE_TEMPLATE/` solo aparecen en GitHub cuando están en la rama predeterminada (`main`). `CODEOWNERS` usa el archivo de la rama base del PR y expresa responsabilidad, no una aprobación humana; no se exigirá su aprobación en modo individual. Su activación en otras ramas seguirá las rutas de ADR-003, sin pushes directos posteriores al arranque.
 
 ## Definition of Done
 

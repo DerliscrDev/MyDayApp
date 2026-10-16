@@ -1,54 +1,47 @@
-# Estado vivo — Mi Día
+# Punto de recuperación — Mi Día
 
-## Hito actual
+Actualizado: **2026-10-16**. Contrastar con archivos y Git; esta memoria no concede permisos ni sustituye evidencia.
 
-**M0 — Fundaciones**, en curso. Existe un proyecto Xcode base con app SwiftUI y targets de tests unitarios/UI, todavía fuera de seguimiento. Git local en `main`; primer commit documental autorizado con el mensaje `chore: bootstrap repository documentation`. Sin remoto local ni push; CI y protecciones pendientes.
+## Estado verificado
 
-## Decisiones confirmadas por el desarrollador
+- **M0 no terminado.** Rama activa: `chore/project-bootstrap`, siguiendo `origin/chore/project-bootstrap`. Último head publicado: `ccb8bf4f189667be0b6697c7595c3b8480708839`; configuración `6f0b82c`. Se prepara otro checkpoint documental: consultar `git log -1` y publicar antes de la revisión final, sin asumir que está en GitHub.
+- `main`, `develop` y sus referencias locales `origin/*` siguen en la base documental `905e50b`. `origin`: `https://github.com/DerliscrDev/MyDayApp.git`. La configuración está en la rama chore, no integrada en esas ramas.
+- Versionados localmente: proyecto/esquema/assets/tests existentes, `.github/workflows/ci.yml`, CODEOWNERS, 3 formularios de issues y documentación actualizada: 27 archivos en total. Código Swift, proyecto y esquema preservados; datos personales de Xcode ignorados.
+- [PR #2](https://github.com/DerliscrDev/MyDayApp/pull/2) abierto, base `develop`, head `chore/project-bootstrap`. Título y descripción corregidos; self-review humana pendiente. [Issue #1](https://github.com/DerliscrDev/MyDayApp/issues/1) enlazado, todavía sin descripción. CI de push y PR correcto en `ccb8bf4`; protecciones activas. Falta publicar el checkpoint, validar su nuevo head, revisión humana y merge. Rama funcional no creada.
 
-- Construir paso a paso, con explicaciones orientadas a dirigir agentes de IA en el desarrollo de la app.
-- El desarrollador aclaró que ya es iOS developer. Centrar las explicaciones en trabajo con agentes, no en fundamentos de iOS ni uso básico de Xcode.
-- Versión mínima de la app: **iOS 17**.
-- Reglas de trabajo de `AGENTS.md` revisadas y aprobadas por el desarrollador.
-- ViewModels con **`@Observable`**, registrado en [ADR-001](docs/adr/001-observation.md).
-- **Inyección de dependencias manual mediante inicializadores**, con composición desde `App/`, registrada en [ADR-002](docs/adr/002-manual-dependency-injection.md).
-- **Swift Testing para pruebas unitarias y de integración; XCTest con XCUIAutomation para UI**, registrado en [ADR-005](docs/adr/005-testing-frameworks.md).
-- **Ramas `main`/`develop`, squash de ramas de trabajo y merge commits de releases/hotfixes hacia `main` y de reintegración en `develop`**, registrado en [ADR-003](docs/adr/003-branching-and-merges.md).
-- **PR + CI + self-review humana documentada, con revisión de IA adicional declarada**, sin aprobaciones formales obligatorias en modo individual, registrado en [ADR-004](docs/adr/004-solo-review.md).
-- Entorno verificado con `xcodebuild -version`: **Xcode 26.2 (17C52)**.
-- El desarrollador aprobó alinear la versión mínima, comprobar el entorno, ejecutar build y ambas suites, y actualizar documentación. Fuera de alcance: funcionalidades, refactors, cambios de concurrencia, Git, GitHub y CI.
-- El desarrollador aprobó añadir una comprobación útil de la pantalla inicial mediante un test de UI, sin funcionalidades nuevas.
-- El desarrollador aprobó preparar `.gitignore`, esquema compartido y plantilla local de PR, sin inicializar Git, crear commits ni configurar/publicar en GitHub o CI.
-- El desarrollador autorizó después únicamente inicializar Git local en `main` y revisar archivos incluidos/ignorados, sin staging, commits ni conexión a GitHub.
-- Después de actualizar su `.gitignore`, el desarrollador aprobó retirar la exclusión de `Package.resolved`, añadir `*.xcresult/`, hacer staging de los 11 archivos acordados y crear únicamente el primer commit local. No autorizó configurar remoto ni hacer push.
-- URL de GitHub facilitada por el desarrollador: `https://github.com/DerliscrDev/MyDayApp.git`. No se comprobó el estado remoto ni se conectó el repositorio local.
+## Objetivo y alcance aprobado
 
-## Último paso
+- **Objetivo:** cerrar M0 y detenerse en la primera rama funcional, sin implementar todavía la feature.
+- Autorización explícita vigente para este cierre: instalar GitHub CLI, preparar CI/gobierno, crear issue/PR, commits/push de configuración y protecciones acordadas después de obtener checks reales. Merge squash hacia `develop` condicionado a CI correcto y **revisión humana final**. Después, crear `feature/core-http-client`, sin implementar código funcional.
+- No cambiar permisos del sistema, simular aprobación humana, forzar pushes ni saltarse las rutas de ADR-003. No dar M0 por cerrado ni crear la rama funcional sobre una base sin integrar.
 
-- Se conserva el `.gitignore` del desarrollador con solo las dos modificaciones aprobadas; se actualiza `CONTRIBUTING.md` para no describir las reglas anteriores.
-- Lista autorizada para el commit inicial (11 archivos): `.gitignore`, `.github/pull_request_template.md`, `AGENTS.md`, `CONTEXT.md`, `CONTRIBUTING.md`, `memory.md` y los cinco ADRs existentes en `docs/adr/`.
-- Fuera del commit: `MyDayApp/`, `MyDayApp.xcodeproj/`, `MyDayAppTests/` y `MyDayAppUITests/`. No se modifican ni borran sus archivos.
-- Git tiene identidad válida de autor y committer. El correo configurado no es un noreply de GitHub; no se muestra ni se cambia. Revisar la privacidad de esos metadatos antes de autorizar publicación.
-- Esta memoria se prepara para incluirse en el propio commit inicial; al retomar, confirmar su hash y el estado final con `git log -1 --oneline` y `git status`, sin crear otro commit solo para registrar el hash.
+## Decisiones y fuentes
 
-## Pendientes
+- Leer [AGENTS.md](AGENTS.md) y [CONTEXT.md](CONTEXT.md) al retomar: trabajo incremental, explicaciones orientadas a dirigir agentes y arquitectura `Presentation → Domain ← Data`.
+- Decisiones aceptadas: [observación](docs/adr/001-observation.md), [DI manual](docs/adr/002-manual-dependency-injection.md), [ramas/merges](docs/adr/003-branching-and-merges.md), [revisión individual](docs/adr/004-solo-review.md) y [testing](docs/adr/005-testing-frameworks.md).
+- iOS mínimo 17.0; Xcode verificado: 26.2 (17C52). El target de app configura `MainActor` por defecto; la política para Domain/ViewModels aún debe acordarse.
+- Se conserva el `.gitignore` del desarrollador con dos ajustes aprobados: permitir `Package.resolved` y excluir `*.xcresult/`.
+- El desarrollador eligió mantener su correo personal en la autoría publicada; no cambiar identidad ni reescribir historial sin permiso.
 
-- Confirmar el commit inicial local y acordar la conexión/publicación en GitHub como una operación separada, incluyendo la revisión de privacidad de autoría.
-- El test unitario sigue vacío; sustituirlo al incorporar comportamiento comprobable, sin inventar lógica solo para tener tests verdes.
-- Crear `develop` desde el primer commit, incorporar el proyecto en una rama `chore/*`, publicar y configurar CI/protecciones con las autorizaciones correspondientes.
-- Preparar plantillas de issues y CODEOWNERS cuando se conozca la cuenta responsable.
-- Acordar el aislamiento de concurrencia al implementar Domain/ViewModels; la plantilla actual configura `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` en el target de app.
+## Evidencia y límites
 
-Las recomendaciones previas del agente no equivalen a decisiones aprobadas.
+- Validación local de proyecto, JSON/XML, YAML y scripts correcta; comprobador de resumen y propagación de fallos verificados. No equivale a ejecución de CI ni de suites iOS.
+- CI de push [38855332988](https://github.com/DerliscrDev/MyDayApp/actions/runs/38855332988) y PR [38856514344](https://github.com/DerliscrDev/MyDayApp/actions/runs/38856514344): `success` para `ccb8bf4`; `Build`/`Tests` correctos. No se han leído conteos remotos. Entorno macos-15/Xcode 26.2/iOS 26.2; no demuestra ejecución iOS 17. Cambios posteriores requieren CI propio.
+- Build local previo correcto en iOS 17.5; tests locales actuales bloqueados por `SIGABRT`/CoreSimulator (código 61), causa desconocida. Históricamente: 4 tests distintos, 7 ejecuciones sin fallos; no sustituye la validación actual.
+- **Bloqueos del agente:** terminal sin DNS a GitHub, CLI temporal `myday-m0-config-n0qwyg7z/tools/gh` sin autenticar. Herramienta HTTP pública funciona; el desarrollador publica desde su Terminal normal, con permiso `workflow` ya resuelto. No pedir ni extraer tokens.
+- Ruleset [25219989](https://github.com/DerliscrDev/MyDayApp/rules/25219989), creado por el desarrollador, verificado por API: `active`, solo `main`/`develop`, ambas protegidas. PR obligatorio, 0 aprobaciones, sin Code Owners, conversaciones resueltas, checks `Build`/`Tests` de Actions (15368), rama actualizada, sin force/delete. Sin restricciones de updates ni historial lineal. Rebase también permitido por GitHub, pero no es el método acordado. Bypass no visible por API pública.
+- Temporales de OpenCode: `myday-m0-config-n0qwyg7z/` (validaciones, CLI y borradores de issue/PR), `myday-project-bootstrap-oq7_rp8n/` (build/tests locales). Pueden desaparecer. Comandos: [CONTRIBUTING.md](CONTRIBUTING.md).
+- Límites: unitario vacío; UI verifica saludo y el resto es plantilla, sin cobertura de negocio. Aviso conocido de App Intents. Sin validación Release, dispositivo físico, iOS 17.0 exacto ni self-review humana confirmada.
 
-## Verificación
+## Próximos pasos para retomar
 
-- Antes de preparar el commit: rama `main`, cero commits, índice vacío y ningún remoto; identidades de autor/committer válidas comprobadas sin mostrar datos personales.
-- Comprobaciones previas completadas: revisión del diff documental, 11 archivos autorizados en staging, `git diff --cached --check` correcto y 25 enlaces relativos contenidos en la propia base documental. `git check-ignore` permite `Package.resolved` y excluye bundles `.xcresult`. Sin coincidencias de los patrones de secretos revisados (no es una auditoría exhaustiva). Confirmar árbol y mensaje con `git show` después del commit; no hay ejecución de CI.
-- Evidencia temporal de este paso: `/private/var/folders/2c/dhvztt5s5vlb4rjc5_t7vnc80000gn/T/opencode/myday-first-commit-oz3uw7wy/` (copias previas y hashes; sin datos de autoría).
-- Build/tests no repetidos: cambios de documentación y exclusiones únicamente. Última ejecución: esquema compartido en copia sin `xcuserdata`, iPhone 15 Pro/iOS 17.5, 4 tests distintos y 7 ejecuciones sin fallos; evidencia en `/private/var/folders/2c/dhvztt5s5vlb4rjc5_t7vnc80000gn/T/opencode/myday-repo-prep-2eyrfooz/`.
-- Límites: no hay autorización de remotos, publicación o CI ni self-review humana confirmada. El test unitario sigue vacío; la aserción UI no demuestra cobertura de reglas de negocio.
+1. Publicar el checkpoint documental desde la Terminal normal si persiste el bloqueo del agente; esperar CI verde en el nuevo head. No reutilizar resultados de `ccb8bf4` como validación de otro commit.
+2. Completar objetivo/alcance/aceptación del issue #1 y documentar self-review humana real en el PR. Después, squash merge hacia `develop`, nunca hacia `main` en este PR.
+3. Tras integrar en `develop`, crear `feature/core-http-client` desde esa base actualizada y detenerse. La implementación y sus criterios siguen por acordar.
 
-## Próximo paso propuesto
+## Protocolo de continuidad
 
-Revisar el resultado del primer commit local y la privacidad del correo de autoría antes de autorizar configurar `origin` y publicar. Crear `develop` desde esa base documental e incorporar el proyecto mediante `chore/*` requerirá acordar el siguiente alcance. No hacer push, cambiar identidad ni reescribir commits sin autorización explícita.
+- Al retomar: leer las fuentes y contrastar `git status --short --branch --untracked-files=all`, `git log -1 --oneline` y referencias/upstreams. Investigar discrepancias antes de editar.
+- Acordar objetivo, alcance y aceptación; ejecutar dentro de ese alcance y consultar decisiones relevantes. Aplicar los permisos explícitos de AGENTS para Git, GitHub y delegación.
+- Al cerrar tarea o cambiar objetivo/sesión: reemplazar estado, evidencia, pendientes y permisos, sin acumular transcripciones. Decisiones duraderas en ADRs, distinguiendo propuestas de aceptadas.
+- Sin commits directos adicionales a `main`/`develop` ni PRs vacíos. El checkpoint se incluye en el próximo cambio autorizado, no genera commit/push automáticamente.

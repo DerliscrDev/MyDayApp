@@ -1,0 +1,95 @@
+name: CI
+
+"on":
+  push:
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Xcode version
+        run: xcodebuild -version
+      - name: Build for iOS Simulator
+        run: |
+          xcodebuild -project MyDayApp.xcodeproj -scheme MyDayApp \
+            -configuration Debug -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" build \
+            2>&1 | tee "$RUNNER_TEMP/build.log"
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: build-log
+          path: ${{ runner.temp }}/build.log
+          if-no-files-found: warn
+          retention-days: 7
+
+  tests:
+    name: Tests
+    needs: build
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Simulator diagnostics
+        run: |
+          xcodebuild -version
+          xcrun simctl list devices available
+      - name: Run Swift Testing and XCTest UI suites
+        run: |
+          xcodebuild -project MyDayApp.xcodeproj -scheme MyDayApp \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.2' \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+            -resultBundlePath "$RUNNER_TEMP/Tests.xcresult" \
+            -parallel-testing-enabled NO test \
+            2>&1 | tee "$RUNNER_TEMP/tests.log"
+      - name: Summarize test results
+        run: |
+          xcrun xcresulttool get test-results summary \
+            --path "$RUNNER_TEMP/Tests.xcresult" --format json \
+            | tee "$RUNNER_TEMP/test-summary.json"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          summary = json.loads((Path(os.environ["RUNNER_TEMP"]) / "test-summary.json").read_text())
+          if summary["result"] != "Passed" or summary["totalTestCount"] == 0:
+              raise SystemExit("No hay una ejecución de tests correcta y no vacía.")
+          PY
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-evidence
+          path: |
+            ${{ runner.temp }}/tests.log
+            ${{ runner.temp }}/test-summary.json
+            ${{ runner.temp }}/Tests.xcresult
+          if-no-files-found: warn
+          retention-days: 7
